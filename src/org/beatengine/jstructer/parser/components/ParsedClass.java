@@ -89,11 +89,12 @@ public class ParsedClass
             a--;
         }
         if(result.getFunctionDefinition().contains("while(") || result.getFunctionDefinition().contains("while (") || result.getFunctionDefinition().contains("while\t(")
-         || result.getFunctionDefinition().contains("if(") || result.getFunctionDefinition().contains("if (") || result.getFunctionDefinition().contains("if\t(")
-                || result.getFunctionDefinition().contains("do") || result.getFunctionDefinition().contains("do\r\n") || result.getFunctionDefinition().contains("do\n")
-                || result.getFunctionDefinition().contains("else ") || result.getFunctionDefinition().contains("else\r\n") || result.getFunctionDefinition().contains("else\n")
-                || result.getFunctionDefinition().contains("for(") || result.getFunctionDefinition().contains("for (") || result.getFunctionDefinition().contains("for\t(")
-                )
+            || result.getFunctionDefinition().contains("if(") || result.getFunctionDefinition().contains("if (") || result.getFunctionDefinition().contains("if\t(")
+            || result.getFunctionDefinition().contains("do") || result.getFunctionDefinition().contains("do\r\n") || result.getFunctionDefinition().contains("do\n")
+            || result.getFunctionDefinition().contains("else ") || result.getFunctionDefinition().contains("else\r\n") || result.getFunctionDefinition().contains("else\n")
+            || result.getFunctionDefinition().contains("for(") || result.getFunctionDefinition().contains("for (") || result.getFunctionDefinition().contains("for\t(")
+            || result.getFunctionDefinition().replace(" ", "").replace("\r","").replace("\n","").equals(")")
+         )
         {
             return findNextFunction(s, fend+1);
         }
@@ -202,6 +203,49 @@ public class ParsedClass
 
     }
 
+    int findScopeEnd(final String s, int position)
+    {
+        int i = 0;
+        while (i == 0 && position < s.length())
+        {
+            if(s.charAt(position) == '{')
+            {
+                i++;
+            }
+            position++;
+        }
+        if(position >= s.length())
+        {
+            return 0;
+        }
+        while (i != 0 && position < s.length())
+        {
+            if(s.charAt(position) == '"')
+            {
+                //Skipping Strings
+                position++;
+                while(position < s.length())
+                {
+                    if(s.charAt(position) == '"' && s.charAt(position-1) != '\\')
+                    {
+                        position++;
+                        break;
+                    }
+                }
+            }
+            if(s.charAt(position) == '{')
+            {
+                i++;
+            }
+            else if(s.charAt(position) == '}')
+            {
+                i--;
+            }
+            position++;
+        }
+        return position;
+    }
+
     public void parse(final String substring)
     {
 
@@ -213,12 +257,17 @@ public class ParsedClass
             {
                 break;
             }
+            System.out.println(nextFunction.getFunctionDefinition());
             if(pos < nextFunction.getEndPosition() && pos >= 0)
             {
-                parseBlock(substring.substring(pos, nextFunction.getPosition()));
+                final String innerSpace = substring.substring(pos, nextFunction.getPosition());
+                int endOfFunctionBody = findScopeEnd(innerSpace, 0);
+                if(endOfFunctionBody < nextFunction.getPosition())
+                {
+                    parseBlock(innerSpace.substring(endOfFunctionBody));
+                }
             }
             pos = nextFunction.getEndPosition()+1;
-            System.out.println(nextFunction.getFunctionDefinition());
         }
     }
 }

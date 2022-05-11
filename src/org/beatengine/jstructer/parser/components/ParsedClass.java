@@ -38,4 +38,9 @@ public class ParsedClass
     {
         this.functions = functions;
     }
+
+    public void parse(String substring)
+    {
+        //todo ...
+    }
 }

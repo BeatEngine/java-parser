@@ -246,28 +246,86 @@ public class ParsedClass
         return position;
     }
 
-    public void parse(final String substring)
+    private void inti(final String s)
     {
 
-        int pos = 0;
-        while (pos < substring.length())
+
+        //String[] lines = s.split(";\r\n|;\n");
+        int dbg = 1;
+    }
+
+    public void parse(final String s)
+    {
+        final List<String> scopeBlocks = new ArrayList<String>();
+        final List<String> variableBlocks = new ArrayList<String>();
+
+        int a = 0;
+        int b = 0;
+        int e = 0;
+
+        for(int i = 0; i < s.length(); i++)
         {
-            FunctionResult nextFunction = findNextFunction(substring, pos);
-            if(nextFunction.getFunctionDefinition().isBlank())
+            if(s.charAt(i) == '{')
             {
-                break;
-            }
-            System.out.println(nextFunction.getFunctionDefinition());
-            if(pos < nextFunction.getEndPosition() && pos >= 0)
-            {
-                final String innerSpace = substring.substring(pos, nextFunction.getPosition());
-                int endOfFunctionBody = findScopeEnd(innerSpace, 0);
-                if(endOfFunctionBody < nextFunction.getPosition())
+                int l = i;
+                boolean isInString = false;
+                while (l < s.length())
                 {
-                    parseBlock(innerSpace.substring(endOfFunctionBody));
+                    if(s.charAt(l) == '"' || s.charAt(l) == '\'')
+                    {
+                        if(l > 0 && s.charAt(l-1) != '\\')
+                        {
+                            isInString = true;
+                            break;
+                        }
+                    }
+                    else if(s.charAt(l) == '\n')
+                    {
+                        break;
+                    }
+                    l++;
+                }
+                if(!isInString)
+                {
+                    if(b == 0)
+                    {
+                        variableBlocks.add(s.substring(e+1, i));
+                        a = i;
+                    }
+                    b++;
                 }
             }
-            pos = nextFunction.getEndPosition()+1;
+            if(s.charAt(i) == '}')
+            {
+                int l = i;
+                boolean isInString = false;
+                while (l < s.length())
+                {
+                    if(s.charAt(l) == '"' || s.charAt(l) == '\'')
+                    {
+                        if(l > 0 && s.charAt(l-1) != '\\')
+                        {
+                            isInString = true;
+                            break;
+                        }
+                    }
+                    else if(s.charAt(l) == '\n')
+                    {
+                        break;
+                    }
+                    l++;
+                }
+                if(!isInString)
+                {
+                    if(b == 1)
+                    {
+                        e = i;
+                        scopeBlocks.add(s.substring(a+1, i));
+                    }
+                    b--;
+                }
+            }
         }
+        
     }
 }

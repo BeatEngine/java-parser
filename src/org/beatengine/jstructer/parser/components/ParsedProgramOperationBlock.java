@@ -10,7 +10,7 @@ public class ParsedProgramOperationBlock implements ParsedProgramBlock
 
     public ParsedProgramOperationBlock(final String code)
     {
-        parse(code);
+        this.parse(code);
     }
 
     @Override
@@ -34,7 +34,6 @@ public class ParsedProgramOperationBlock implements ParsedProgramBlock
     @Override
     public void parse(String s)
     {
-        //todo parse only codelines
         String withoutCommands = "";
         int a = 0;
         for(int i = 0; i < s.length(); i++)
@@ -59,7 +58,7 @@ public class ParsedProgramOperationBlock implements ParsedProgramBlock
         for(final String cmd: commands)
         {
             String c = cmd.replace("\r", "").replace("\n", "").trim();
-            if(!c.isBlank())
+            if(!c.isBlank() && !c.startsWith("//"))
             {
                 a = 0;
                 for(int i = 0; i < c.length(); i++)
@@ -92,11 +91,11 @@ public class ParsedProgramOperationBlock implements ParsedProgramBlock
                     }
                     if (left.isBlank())
                     {
-                        //memberVariables.add(new ParsedVariable(c.trim(), ""));
+                        this.operations.add(new OperationLine(c.trim(), ""));
                     }
                     else
                     {
-                        //memberVariables.add(new ParsedVariable(left, right));
+                        this.operations.add(new OperationLine(left, right));
                     }
                 }
             }

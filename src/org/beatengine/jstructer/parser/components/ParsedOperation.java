@@ -7,4 +7,31 @@ public class ParsedOperation
     private String operator;
 
     private ParsedOperationPart rightVariable;
+
+    public ParsedOperation(ParsedOperationPart leftVariable, String operator, ParsedOperationPart rightVariable)
+    {
+        this.leftVariable = leftVariable;
+        this.operator = operator;
+        this.rightVariable = rightVariable;
+    }
+
+    public ParsedOperation()
+    {
+
+    }
+
+    public ParsedOperationPart getLeftVariable()
+    {
+        return leftVariable;
+    }
+
+    public String getOperator()
+    {
+        return operator;
+    }
+
+    public ParsedOperationPart getRightVariable()
+    {
+        return rightVariable;
+    }
 }

@@ -15,7 +15,7 @@ public interface ParsedProgramBlock
 
     public static List<ParsedProgramBlock> parser(final String s)
     {
-        final List<ParsedProgramBlock> blocks = new ArrayList<>();
+        final List<ParsedProgramBlock> resultBlocks = new ArrayList<>();
         final List<String> scopeBlocks    = new ArrayList<String>();
         final List<String> variableBlocks = new ArrayList<String>();
 
@@ -103,14 +103,14 @@ public interface ParsedProgramBlock
                     break;
                 }
             }
-            blocks.add(new ParsedProgramOperationBlock(variableHead));
-            blocks.add(new ParsedConditionalProgramPath(scopeHead, scopeBlocks.get(i)));
+            resultBlocks.add(new ParsedProgramOperationBlock(variableHead));
+            resultBlocks.add(new ParsedConditionalProgramPath(scopeHead, scopeBlocks.get(i)));
             //System.out.println(scopeHead);
             //parseVariables(variableHead);
             //System.out.println(scopeBlocks.get(i));
             //parseFunction(scopeHead, scopeBlocks.get(i));
         }
-        return blocks;
+        return resultBlocks;
     }
 
 }

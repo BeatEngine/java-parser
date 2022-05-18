@@ -14,7 +14,8 @@ public class ParsedConditionalProgramPath implements ParsedProgramBlock
 
     public ParsedConditionalProgramPath(final String conditionHead, final String body)
     {
-        int dbg = 1;
+        //todo parse condition
+        this.parse(body);
     }
 
     public ParsedConditionalProgramPath()
